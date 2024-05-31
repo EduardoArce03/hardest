@@ -1,37 +1,78 @@
 version: '3.6'
 
 services:
-  srvdb:
-    image: postgres
-    container_name: srvdb
-    hostname: srvdb
+  postgres:
+    image: postgres:13
+    restart: always
+    container_name: BD
+    hostname: BD
     environment:
-      POSTGRES_USER: consultas
-      POSTGRES_DB: consultas
-      POSTGRES_PASSWORD: QueryConSql.pwd
-      TZ:  America/Guayaquil
+      POSTGRES_USER: edu
+      POSTGRES_PASSWORD: edu
+      POSTGRES_DB: productosdb
+      POSTGRES_HOST: BD
     ports:
-      - 5432:5432
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - datalogger_net
-    volumes:
-      - pg_data2:/var/lib/postgresql/data
-
-
-  srvwildfly:
-    image: ups/demoappdocker
-    container_name: srvwildfly
-    hostname: srvwildfly
-    environment:
-      TZ:  America/Guayaquil
-    ports:
-      - 8082:8080
-      - 8899:8009
-      - 9992:9990
-      - 8787:8787
-    command: /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -c standalone.xml -bmanagement 0.0.0.0 --debug *:8787
+      
+  swaggerui:
     depends_on:
-      - srvdb
+      - wildfly
+    image: swaggerapi/swagger-ui
+    ports:
+      - 8888:8080
+
+  swaggereditor:
+    depends_on:
+      - wildfly
+    image: swaggerapi/swagger-editor
+    ports:
+      - 9999:8080
+
+  jaegertracingio:
+    depends_on:
+      - wildfly
+    image: jaegertracing/all-in-one:1.16.0
+    ports:
+      - 6831:6831/udp
+      - 16686:16686
+  productos:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=productosdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - JAEGER_AGENT_HOST=jaegertracingio
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+
+      
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    command: ["sh", "-c", "/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0"]
+    networks:
+      - datalogger_net
+      
+  angular:
+    build:
+      context: ./DockerVirtualizacion
+      dockerfile: Dockerfile
+    container_name: frontend
+    hostname: frontend
+    ports:
+      - 4200:80
+    depends_on:
+      - productos
     networks:
       - datalogger_net
 
@@ -40,7 +81,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: info@jasoft.ec
       PGADMIN_DEFAULT_PASSWORD: clave
-      TZ:  America/Guayaquil
+      TZ: America/Guayaquil
     ports:
       - 5050:80
     depends_on:
@@ -54,7 +95,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /Users/cristiantimbi/datapg
+      device: C:\Users\eduar\dataapg
 
 networks:
   datalogger_net:

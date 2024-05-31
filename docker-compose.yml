@@ -1,0 +1,113 @@
+version: '16'
+
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    container_name: baseDeDatos
+    hostname: baseDeDatos
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: productosdb
+      POSTGRES_HOST: baseDeDatos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - datalogger_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - datalogger_net
+
+  demoappdocker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=productosdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - JAEGER_AGENT_HOST=jaegertracingio
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+      
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    command: ["sh", "-c", "/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0"]
+    networks:
+      - datalogger_net
+
+  swaggerui:
+    depends_on:
+      - demoappdocker
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON: /api/openapi.yaml
+    ports:
+      - 8888:8080
+    volumes:
+      - ./openapi.yaml:/api/openapi.yaml
+    networks:
+      - datalogger_net
+
+  swaggereditor:
+    depends_on:
+      - demoappdocker
+    image: swaggerapi/swagger-editor
+    ports:
+      - 9999:8080
+    networks:
+      - datalogger_net
+
+  jaegertracingio:
+    depends_on:
+      - demoappdocker
+    image: jaegertracing/all-in-one:1.16.0
+    ports:
+      - 6831:6831/udp
+      - 16686:16686
+    networks:
+      - datalogger_net
+    environment:
+      JAEGER_SERVICE_NAME: "demoappdocker"
+  
+  angular:
+    build:
+      context: ./DockerVirtualizacion
+      dockerfile: Dockerfile
+    container_name: angular
+    hostname: cliente
+    ports:
+      - 4200:80
+    depends_on:
+      - demoappdocker
+    networks:
+      - datalogger_net
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: c:/Users/eduar/datapg
+
+networks:
+  datalogger_net:
+    driver: bridge

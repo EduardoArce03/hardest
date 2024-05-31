@@ -1,3 +1,10 @@
-/Users/cristiantimbi/workspace-java/demoappdocker/src/main/java/ec/edu/ups/p58/pw/demoappdocker/Jsf23Activator.java
-/Users/cristiantimbi/workspace-java/demoappdocker/src/main/java/ec/edu/ups/p58/pw/demoappdocker/HolaMundoService.java
-/Users/cristiantimbi/workspace-java/demoappdocker/src/main/java/ec/edu/ups/p58/pw/demoappdocker/ApplictaionPathActivator.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\services\ProductoService.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\dao\ProductoDAO.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\services\PathBase.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\swagger\Context.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\model\Producto.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\business\GestionProductos.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\services\ErrorMessage.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\swagger\Config.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\services\CORSFilter.java
+D:\Ejemplo microservicios-20240515 (1)-20240515\demoappdocker\demoappdocker\src\main\java\services\JAXActivator.java

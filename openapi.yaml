@@ -1,0 +1,186 @@
+openapi: 3.0.3
+info:
+  title: Productos API
+  description: API para la gestión de productos.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: pablobybravo@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/demoappdocker/rest
+tags:
+  - name: Productos
+    description: Todo sobre productos
+paths:
+  /productos:
+    post:
+      tags:
+        - Productos
+      summary: Crear un nuevo producto
+      description: Crear un nuevo producto en la base de datos.
+      operationId: crearProducto
+      requestBody:
+        description: Datos del producto a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '400':
+          description: Error al guardar el producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      tags:
+        - Productos
+      summary: Actualizar un producto existente
+      description: Actualizar los datos de un producto existente en la base de datos.
+      operationId: actualizarProducto
+      requestBody:
+        description: Datos del producto a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoPut'
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '406':
+          description: Error al actualizar el producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    delete:
+      tags:
+        - Productos
+      summary: Borrar un producto
+      description: Borrar un producto de la base de datos.
+      operationId: borrarProducto
+      parameters:
+        - name: codigo
+          in: query
+          description: Código del producto a borrar
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Error al borrar el producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /productos/list:
+    get:
+      tags:
+        - Productos
+      summary: Obtener todos los productos
+      description: Obtener todos los productos
+      operationId: leerProductos
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Producto'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /productos/{codigo}:
+    get:
+      tags:
+        - Productos
+      summary: Obtener un producto por su código
+      description: Obtener los datos de un producto por su código.
+      operationId: leerProductoPorCodigo
+      parameters:
+        - name: codigo
+          in: path
+          description: Código del producto a obtener
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+components:
+  schemas:
+    Producto:
+      type: object
+      properties:
+        codigo:
+          type: integer
+          example: 1
+        marca:
+          type: string
+          example: 'Toyota'
+        color:
+          type: string
+          example: 'Rojo'
+        tipo:
+          type: string
+          example: 'Sedán'
+    ProductoPut:
+      type: object
+      properties:
+        codigo:
+          type: integer
+          format: int64
+          example: 1
+        marca:
+          type: string
+          example: 'Toyota'
+        color:
+          type: string
+          example: 'Rojo'
+        tipo:
+          type: string
+          example: 'Sedán'
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

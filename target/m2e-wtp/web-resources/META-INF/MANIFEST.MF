@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Build-Jdk-Spec: 11
-Specification-Title: demoappdocker
-Specification-Version: 0.0
-Implementation-Title: demoappdocker
-Implementation-Version: 0.0.1-SNAPSHOT
-Created-By: Maven Integration for Eclipse
-
