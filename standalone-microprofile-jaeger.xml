@@ -136,7 +136,7 @@
                 </datasource>
 
                 <datasource jndi-name="java:jboss/datasources/PostgreSQLDS" pool-name="PostgreSQLDS" enabled="true" statistics-enabled="true" use-java-context="true">
-                    <connection-url>jdbc:postgresql://postgres:5432/productosdb</connection-url>
+                    <connection-url>jdbc:postgresql://postgres:5432/autosdb</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <min-pool-size>10</min-pool-size>
